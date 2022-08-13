@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS collections (
 		id SERIAL PRIMARY KEY,
-		collection_name VARCHAR(60) NOT NULL,
+		collection_name VARCHAR(60) UNIQUE NOT NULL,
 		collection_year SMALLINT NOT NULL
 		);
 			
