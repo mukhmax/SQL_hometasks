@@ -1,1 +1,5 @@
 Task5_PostgreSQL_form_Python/.idea/*
+Task6_Python&ORM.DB/.idea/*
+Task6_Python&ORM.DB/venv/*
+Task6_Python&ORM.DB/.env
+Task6_Python&ORM.DB/__pycache__/*
