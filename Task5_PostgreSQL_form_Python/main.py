@@ -1,9 +1,12 @@
 import psycopg2
 from pprint import pprint
+from dotenv import load_dotenv
+import os
 
-database_name = 'clients_db'
-username = 'postgres'
-password = ''
+load_dotenv()
+database_name = os.getenv('DATABASE_NAME')
+username = os.getenv('SQL_USER')
+password = os.getenv('SQL_PASS')
 
 
 def create_tables():
@@ -32,33 +35,18 @@ def create_tables():
     conn.close()
 
 
-def client_search():
+def client_search(**kwargs):
     conn = psycopg2.connect(database=database_name, user=username, password=password)
     with conn.cursor() as cur:
-        print('''Введите тип поиска:
-            1 - поиск по имени
-            2 - поиск по фамили
-            3 - поиск по адресу электронной почты
-            4 - поиск по номеру телефона
-            5 - выход''')
-        search_type = int(input(':>  '))
-        if search_type == 1:
-            first_name = input('Ведите имя:  ')
-            values = ({'first_name': first_name, 'last_name': None, 'email': None, 'phone_number': None})
-        elif search_type == 2:
-            last_name = input('Ведите фамилию:  ')
-            values = ({'first_name': None, 'last_name': last_name, 'email': None, 'phone_number': None})
-        elif search_type == 3:
-            email = input('Ведите адрес электронной почты:  ')
-            values = ({'first_name': None, 'last_name': None, 'email': email, 'phone_number': None})
-        elif search_type == 4:
-            phone_number = input('Ведите номер телефона в формате +7XXXXXXXXXX:  ')
-            values = ({'first_name': None, 'last_name': None, 'email': None, 'phone_number': phone_number})
-        elif search_type == 5:
-            return
-        else:
-            print('Введен неверный тип поиска.')
-            client_search()
+        values = ({'first_name': None, 'last_name': None, 'email': None, 'phone_number': None})
+        if 'first_name' in kwargs.keys():
+            values['first_name'] = kwargs['first_name']
+        if 'last_name' in kwargs.keys():
+            values['last_name'] = kwargs['last_name']
+        if 'email' in kwargs.keys():
+            values['email'] = kwargs['email']
+        if 'phone_number' in kwargs.keys():
+            values['phone_number'] = kwargs['phone_number']
         cur.execute("""
         SELECT c.client_id, c.first_name, c.last_name, c.email, p.phone_number FROM clients c
         LEFT JOIN phones p ON c.client_id = p.client_id WHERE
@@ -243,4 +231,4 @@ if __name__ == '__main__':
     # client_update.phone_delete()
     # client_update.client_change(10)
     # client_update.client_delete()
-    client_search()
+    client_search(first_name='Maksim', last_name='Ivanov')
